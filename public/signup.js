@@ -15,6 +15,7 @@ const handleSubmitEvent = async (event) => {
 
     }
     catch (err) {
+        console.log(err);
         alert('Error');
     }
 
