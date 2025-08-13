@@ -201,40 +201,72 @@ const downloadReport = async () => {
     }
 };
 
-
 const getLeaderboard = async () => {
     try {
         console.log('Leaderboard Clicked!');
         const token = JSON.parse(localStorage.getItem('token'));
 
-
         const leaderboard = await axios.get('/premium/leaderboard', {
             headers: { 'Authorization': token }
         });
 
-
         const data = leaderboard.data.data;
+
+        // Wrapper div for leaderboard content
+        const leaderboardContainer = document.createElement('div');
+        leaderboardContainer.id = 'leaderboardDetails';
+        leaderboardContainer.className = 'card my-3 shadow rounded';
+
+        // Header with close button
+        const header = document.createElement('div');
+        header.className = 'card-header d-flex justify-content-between align-items-center';
+        header.innerHTML = `
+            <h5 class="mb-0">Leaderboard</h5>
+            <button type="button" class="btn-close" aria-label="Close"></button>
+        `;
+
+        // Close button functionality
+        header.querySelector('.btn-close').addEventListener('click', () => {
+            leaderboardContainer.remove();
+        });
+
+        // List group for leaderboard items
         const ul = document.createElement('ul');
-        ul.id = 'leaderboardDetails';
+        ul.className = 'list-group list-group-flush';
 
-
-        data.forEach(element => {
+        data.forEach((element, index) => {
             const { name, totalExpense } = element;
+
             const li = document.createElement('li');
-            li.textContent = `${name} - ${totalExpense}`;
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+            const userSpan = document.createElement('span');
+            userSpan.innerHTML = `<strong>${index + 1}.</strong> ${name}`;
+
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-primary rounded-pill';
+            badge.textContent = totalExpense;
+
+            li.appendChild(userSpan);
+            li.appendChild(badge);
             ul.appendChild(li);
         });
 
+        // Append all parts
+        leaderboardContainer.appendChild(header);
+        leaderboardContainer.appendChild(ul);
 
         const leaderboardDiv = document.getElementById('LeaderboardDiv');
         const existing = document.getElementById('leaderboardDetails');
         if (existing) existing.remove(); // prevent duplication
-        leaderboardDiv.appendChild(ul);
+        leaderboardDiv.appendChild(leaderboardContainer);
+
     } catch (err) {
         console.error('Error fetching leaderboard:', err);
         alert('Could not load leaderboard');
     }
 };
+
 
 
 const disablePremiumBtn = () => {

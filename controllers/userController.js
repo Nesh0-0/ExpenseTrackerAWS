@@ -9,8 +9,9 @@ const addUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
         // console.log({name, email, username})
-        // const saltRounds = 10;
-        bcrypt.hash(password, process.env.SALT_ROUNDS, async (err, encrypted) => {
+        const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
+
+        bcrypt.hash(password, saltRounds, async (err, encrypted) => {
             try {
                 const entry = await users.create({ name, email, password: encrypted, totalExpense: 0 }, {transaction});
                 console.log(entry);

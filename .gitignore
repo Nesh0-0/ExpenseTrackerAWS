@@ -3,3 +3,4 @@ node_modules/
 *.key
 *.pem
 config/*.json
+access.log
